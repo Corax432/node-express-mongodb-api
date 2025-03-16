@@ -1,29 +1,36 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { swaggerUi, specs } = require('./swagger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(bodyParser.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost/mydatabase', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+const MONGO_URI = process.env.MONGO_URI || "mongodb://db:27017/mydatabase";
+console.log(`🟢 Connecting to MongoDB at ${MONGO_URI}`);
+
+mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
+
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.on('error', err => console.error('❌ MongoDB connection error:', err));
 db.once('open', () => {
-  console.log('Connected to MongoDB');
+    console.log('✅ Connected to MongoDB');
 });
 
-// Routes
 const itemsRouter = require('./routes/items');
-app.use('/items', itemsRouter);
+const ordersRouter = require('./routes/orders');
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.use('/items', itemsRouter);
+app.use('/orders', ordersRouter);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log(`📄 Swagger Docs available at http://localhost:${PORT}/api-docs`);
 });

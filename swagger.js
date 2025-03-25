@@ -1,4 +1,4 @@
-const swaggerJsdoc = require("swagger-jsdoc"); // Ensure this is properly imported
+const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const options = {
@@ -11,7 +11,7 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:3000",
+                url: "http://localhost:4000",
             },
         ],
     },

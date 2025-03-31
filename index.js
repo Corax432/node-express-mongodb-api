@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { swaggerUi, specs } = require('./swagger');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
